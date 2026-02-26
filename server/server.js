@@ -34,8 +34,8 @@ app.get('/', (req, res) => {
         message: '🏥 مرحباً بك في خادم خدمات صحتك الطبي',
         version: '1.0.0',
         status: 'Server is running successfully ✅',
-        apiDocs: 'http://localhost:5000/api/health',
-        frontend: 'http://localhost:3000'
+        apiDocs: process.env.API_DOCS_URL || 'http://localhost:5000/api/health',
+        frontend: process.env.FRONTEND_URL || 'http://localhost:3000'
     });
 });
 

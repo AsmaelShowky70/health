@@ -8,6 +8,8 @@
 **الحل المطبق**:
 - ✅ أضفنا endpoint جديد للـ root يعرض معلومات الخادم
 - ✅ يمكنك الآن الوصول إلى: http://localhost:5000/
+
+> إذا كنت تتصل بـ API المنشورة استخدم https://helth-api.vercel.app/ بدلاً من localhost
 - ⠀**الرد**: معلومات الخادم والـ API docs
 
 ```json

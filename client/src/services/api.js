@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// production API hosted on Vercel; falls back to local dev server if not provided
+const API_URL = process.env.REACT_APP_API_URL || 'https://helth-api.vercel.app/api';
 
 const api = axios.create({
     baseURL: API_URL,
