@@ -13,8 +13,22 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
+// configure CORS origins from environment (comma-separated or wildcard)
+// default to '*' so that deployed frontends don't accidentally get blocked
+const rawOrigins = process.env.CORS_ORIGIN || '*';
+const allowedOrigins = rawOrigins.split(',').map(o => o.trim());
+
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: (origin, callback) => {
+        // allow requests with no origin (e.g. mobile apps, curl)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+            console.log(`CORS: allowing origin ${origin}`);
+            return callback(null, true);
+        }
+        console.warn(`CORS: blocking origin ${origin}`);
+        callback(new Error('CORS policy: Origin not allowed'));
+    },
     credentials: true
 }));
 app.use(express.json());
@@ -34,8 +48,8 @@ app.get('/', (req, res) => {
         message: '🏥 مرحباً بك في خادم خدمات صحتك الطبي',
         version: '1.0.0',
         status: 'Server is running successfully ✅',
-        apiDocs: process.env.API_DOCS_URL || 'http://localhost:5000/api/health',
-        frontend: process.env.FRONTEND_URL || 'http://localhost:3000'
+        apiDocs: process.env.API_DOCS_URL || 'https://helth-api.vercel.app/api/health',
+        frontend: process.env.FRONTEND_URL || 'https://melodic-monstera-cde782.netlify.app/'
     });
 });
 
