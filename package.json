@@ -1,0 +1,24 @@
+{
+    "name": "health-services",
+    "version": "1.0.0",
+    "description": "موقع شامل للخدمات الطبية",
+    "main": "server/server.js",
+    "scripts": {
+        "server": "cd server && npm run dev",
+        "client": "cd client && npm start",
+        "dev": "concurrently \"npm run server\" \"npm run client\"",
+        "start:server": "cd server && npm start",
+        "start:client": "cd client && npm start",
+        "install:all": "npm install && cd server && npm install && cd ../client && npm install"
+    },
+    "keywords": [
+        "health",
+        "medical",
+        "consultation"
+    ],
+    "author": "Asmael",
+    "license": "MIT",
+    "devDependencies": {
+        "concurrently": "^7.6.0"
+    }
+}
