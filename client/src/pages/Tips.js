@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { tipsService } from '../services/api';
 import './Tips.css';
 
@@ -38,6 +39,7 @@ function Tips() {
                                 <h3>{tip.title}</h3>
                                 <span className="tip-category">{tip.category}</span>
                                 <p>{tip.content.substring(0, 150)}...</p>
+                                <Link to={`/tips/${tip.id}`} className="read-more">اقرأ المزيد ←</Link>
                             </div>
                         ))}
                     </div>

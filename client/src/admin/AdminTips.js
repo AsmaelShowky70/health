@@ -11,6 +11,7 @@ function AdminTips() {
     });
     const [showForm, setShowForm] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [editId, setEditId] = useState(null);
 
     useEffect(() => {
         fetchTips();
@@ -37,15 +38,33 @@ function AdminTips() {
         setLoading(true);
 
         try {
-            await tipsService.create(formData);
+            if (editId) {
+                await tipsService.update(editId, formData);
+                alert('تم تحديث النصيحة بنجاح');
+            } else {
+                await tipsService.create(formData);
+                alert('تم إضافة النصيحة بنجاح');
+            }
             setFormData({ title: '', content: '', category: '' });
             setShowForm(false);
+            setEditId(null);
             fetchTips();
         } catch (err) {
-            alert('خطأ في إنشاء النصيحة');
+            alert(editId ? 'خطأ في تحديث النصيحة' : 'خطأ في إضافة النصيحة');
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleEdit = (tip) => {
+        setFormData({
+            title: tip.title,
+            content: tip.content,
+            category: tip.category
+        });
+        setEditId(tip.id);
+        setShowForm(true);
+        window.scrollTo(0, 0);
     };
 
     const handleDelete = async (id) => {
@@ -64,12 +83,22 @@ function AdminTips() {
             <div className="container">
                 <h1 className="page-title">إدارة النصائح</h1>
 
-                <button className="btn-add" onClick={() => setShowForm(!showForm)}>
+                <button
+                    className="btn-add"
+                    onClick={() => {
+                        if (showForm) {
+                            setEditId(null);
+                            setFormData({ title: '', content: '', category: '' });
+                        }
+                        setShowForm(!showForm);
+                    }}
+                >
                     {showForm ? 'إلغاء' : '+ إضافة نصيحة'}
                 </button>
 
                 {showForm && (
                     <form onSubmit={handleSubmit} className="admin-form">
+                        <h2>{editId ? 'تعديل النصيحة' : 'إضافة نصيحة جديدة'}</h2>
                         <div className="form-group">
                             <label>العنوان *</label>
                             <input
@@ -104,7 +133,7 @@ function AdminTips() {
                         </div>
 
                         <button type="submit" className="btn" disabled={loading}>
-                            {loading ? 'جاري الحفظ...' : 'حفظ النصيحة'}
+                            {loading ? 'جاري الحفظ...' : (editId ? 'تحديث النصيحة' : 'حفظ النصيحة')}
                         </button>
                     </form>
                 )}
@@ -118,13 +147,22 @@ function AdminTips() {
                                 <div className="item-info">
                                     <h3>{tip.title}</h3>
                                     <p className="category">{tip.category}</p>
+                                    <p className="content-preview">{tip.content.substring(0, 100)}...</p>
                                 </div>
-                                <button
-                                    className="btn btn-danger"
-                                    onClick={() => handleDelete(tip.id)}
-                                >
-                                    حذف
-                                </button>
+                                <div className="item-actions">
+                                    <button
+                                        className="btn btn-edit"
+                                        onClick={() => handleEdit(tip)}
+                                    >
+                                        تعديل
+                                    </button>
+                                    <button
+                                        className="btn btn-danger"
+                                        onClick={() => handleDelete(tip.id)}
+                                    >
+                                        حذف
+                                    </button>
+                                </div>
                             </div>
                         ))
                     )}

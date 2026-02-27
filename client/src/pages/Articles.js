@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { articlesService } from '../services/api';
 import './Articles.css';
 
@@ -57,7 +57,7 @@ function Articles() {
                                         <span className="article-date">
                                             {new Date(article.created_at).toLocaleDateString('ar-SA')}
                                         </span>
-                                        <button className="read-more">اقرأ المزيد →</button>
+                                        <Link to={`/articles/${article.id}`} className="read-more">اقرأ المزيد ←</Link>
                                     </div>
                                 </div>
                             </article>

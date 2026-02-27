@@ -11,6 +11,11 @@ import CalorieCalculator from './pages/CalorieCalculator';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminLogin from './pages/AdminLogin';
+import ArticleDetail from './pages/ArticleDetail';
+import TipDetail from './pages/TipDetail';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfUse from './pages/TermsOfUse';
+import ContactUs from './pages/ContactUs';
 
 // Admin Pages
 import AdminDashboard from './admin/AdminDashboard';
@@ -69,13 +74,18 @@ function App() {
                 <main className="main-content">
                     <Routes>
                         {/* Public Routes */}
-                        <Route path="/" element={<Home />} />
+                        <Route path="/" element={<Home user={user} />} />
                         <Route path="/articles" element={<Articles />} />
+                        <Route path="/articles/:id" element={<ArticleDetail />} />
                         <Route path="/tips" element={<Tips />} />
+                        <Route path="/tips/:id" element={<TipDetail />} />
                         <Route path="/consultation" element={<Consultation />} />
                         <Route path="/calorie" element={<CalorieCalculator />} />
                         <Route path="/login" element={<Login onLogin={handleLogin} />} />
                         <Route path="/register" element={<Register onLogin={handleLogin} />} />
+                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                        <Route path="/terms-of-use" element={<TermsOfUse />} />
+                        <Route path="/contact-us" element={<ContactUs />} />
 
                         {/* Admin Routes */}
                         <Route

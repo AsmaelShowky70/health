@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Home.css';
 
-function Home() {
+function Home({ user }) {
     const services = [
         {
             id: 1,
@@ -101,15 +101,17 @@ function Home() {
             </section>
 
             {/* CTA Section */}
-            <section className="cta-section">
-                <div className="container">
-                    <h2>ابدأ رحلتك الصحية اليوم</h2>
-                    <p>إذا لم تكن لديك حساب، سجل الآن واحصل على كل الخدمات</p>
-                    <Link to="/register" className="btn btn-large">
-                        إنشاء حساب مجاني
-                    </Link>
-                </div>
-            </section>
+            {!user && (
+                <section className="cta-section">
+                    <div className="container">
+                        <h2>ابدأ رحلتك الصحية اليوم</h2>
+                        <p>إذا لم تكن لديك حساب، سجل الآن واحصل على كل الخدمات</p>
+                        <Link to="/register" className="btn btn-large">
+                            إنشاء حساب مجاني
+                        </Link>
+                    </div>
+                </section>
+            )}
         </div>
     );
 }

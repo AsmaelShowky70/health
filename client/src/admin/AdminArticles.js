@@ -12,6 +12,7 @@ function AdminArticles() {
     });
     const [showForm, setShowForm] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [editId, setEditId] = useState(null);
 
     useEffect(() => {
         fetchArticles();
@@ -38,15 +39,34 @@ function AdminArticles() {
         setLoading(true);
 
         try {
-            await articlesService.create(formData);
+            if (editId) {
+                await articlesService.update(editId, formData);
+                alert('تم تحديث المقالة بنجاح');
+            } else {
+                await articlesService.create(formData);
+                alert('تم إنشاء المقالة بنجاح');
+            }
             setFormData({ title: '', content: '', category: '', image_url: '' });
             setShowForm(false);
+            setEditId(null);
             fetchArticles();
         } catch (err) {
-            alert('خطأ في إنشاء المقالة');
+            alert(editId ? 'خطأ في تحديث المقالة' : 'خطأ في إنشاء المقالة');
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleEdit = (article) => {
+        setFormData({
+            title: article.title,
+            content: article.content,
+            category: article.category,
+            image_url: article.image_url || ''
+        });
+        setEditId(article.id);
+        setShowForm(true);
+        window.scrollTo(0, 0);
     };
 
     const handleDelete = async (id) => {
@@ -65,12 +85,22 @@ function AdminArticles() {
             <div className="container">
                 <h1 className="page-title">إدارة المقالات</h1>
 
-                <button className="btn btn-add" onClick={() => setShowForm(!showForm)}>
+                <button 
+                    className="btn btn-add" 
+                    onClick={() => {
+                        if (showForm) {
+                            setEditId(null);
+                            setFormData({ title: '', content: '', category: '', image_url: '' });
+                        }
+                        setShowForm(!showForm);
+                    }}
+                >
                     {showForm ? 'إلغاء' : '+ إضافة مقالة'}
                 </button>
 
                 {showForm && (
                     <form onSubmit={handleSubmit} className="admin-form">
+                        <h2>{editId ? 'تعديل المقالة' : 'إضافة مقالة جديدة'}</h2>
                         <div className="form-group">
                             <label>العنوان *</label>
                             <input
@@ -115,7 +145,7 @@ function AdminArticles() {
                         </div>
 
                         <button type="submit" className="btn" disabled={loading}>
-                            {loading ? 'جاري الحفظ...' : 'حفظ المقالة'}
+                            {loading ? 'جاري الحفظ...' : (editId ? 'تحديث المقالة' : 'حفظ المقالة')}
                         </button>
                     </form>
                 )}
@@ -131,12 +161,20 @@ function AdminArticles() {
                                     <p className="category">{article.category}</p>
                                     <p className="content-preview">{article.content.substring(0, 100)}...</p>
                                 </div>
-                                <button
-                                    className="btn btn-danger"
-                                    onClick={() => handleDelete(article.id)}
-                                >
-                                    حذف
-                                </button>
+                                <div className="item-actions">
+                                    <button
+                                        className="btn btn-edit"
+                                        onClick={() => handleEdit(article)}
+                                    >
+                                        تعديل
+                                    </button>
+                                    <button
+                                        className="btn btn-danger"
+                                        onClick={() => handleDelete(article.id)}
+                                    >
+                                        حذف
+                                    </button>
+                                </div>
                             </div>
                         ))
                     )}
