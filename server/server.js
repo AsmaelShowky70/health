@@ -13,24 +13,19 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-// configure CORS origins from environment (comma-separated or wildcard)
-// default to '*' so that deployed frontends don't accidentally get blocked
-const rawOrigins = process.env.CORS_ORIGIN || '*';
-const allowedOrigins = rawOrigins.split(',').map(o => o.trim());
-
+// السماح بجميع النطاقات لتجنب مشاكل CORS
 app.use(cors({
-    origin: (origin, callback) => {
-        // allow requests with no origin (e.g. mobile apps, curl)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
-            console.log(`CORS: allowing origin ${origin}`);
-            return callback(null, true);
-        }
-        console.warn(`CORS: blocking origin ${origin}`);
-        callback(new Error('CORS policy: Origin not allowed'));
+    origin: function (origin, callback) {
+        // السماح دائماً
+        callback(null, origin || '*');
     },
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 }));
+
+// معالجة طلبات OPTIONS مسبقاً
+app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -79,6 +74,12 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`🏥 خادم الخدمات الطبية يعمل على المنفذ ${PORT}`);
-});
+// Only listen if not running on Vercel serverless
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`🏥 خادم الخدمات الطبية يعمل على المنفذ ${PORT}`);
+    });
+}
+
+// التصدير ليعمل مع Vercel
+export default app;
