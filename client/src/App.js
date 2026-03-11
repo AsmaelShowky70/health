@@ -92,17 +92,11 @@ function App() {
                             path="/admin-login"
                             element={<AdminLogin onLogin={handleLogin} />}
                         />
-                        {isAdmin ? (
-                            <>
-                                <Route path="/admin" element={<AdminDashboard />} />
-                                <Route path="/admin/articles" element={<AdminArticles />} />
-                                <Route path="/admin/consultations" element={<AdminConsultations />} />
-                                <Route path="/admin/tips" element={<AdminTips />} />
-                                <Route path="/admin/users" element={<AdminUsers />} />
-                            </>
-                        ) : (
-                            <Route path="/admin/*" element={<Navigate to="/admin-login" />} />
-                        )}
+                        <Route path="/admin" element={isAdmin ? <AdminDashboard /> : <Navigate to="/admin-login" />} />
+                        <Route path="/admin/articles" element={isAdmin ? <AdminArticles /> : <Navigate to="/admin-login" />} />
+                        <Route path="/admin/consultations" element={isAdmin ? <AdminConsultations /> : <Navigate to="/admin-login" />} />
+                        <Route path="/admin/tips" element={isAdmin ? <AdminTips /> : <Navigate to="/admin-login" />} />
+                        <Route path="/admin/users" element={isAdmin ? <AdminUsers /> : <Navigate to="/admin-login" />} />
 
                         {/* Redirect to home for unknown routes */}
                         <Route path="*" element={<Navigate to="/" />} />
